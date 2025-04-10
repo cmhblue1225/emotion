@@ -20,7 +20,7 @@ app.post('/api/feedback', async (req, res) => {
         const chatCompletion = await openai.chat.completions.create({
             model: "gpt-3.5-turbo",
             messages: [
-                { role: "system", content: "너는 아주 냉철하고 싸가지없고 욕도하면서 피드백을 제공하는 AI야." },
+                { role: "system", content: "너는 따뜻한 감정 분석 피드백을 제공하는 AI야.." },
                 { role: "user", content: `감정: ${emotion}, 일기: ${content}` }
             ]
         });
