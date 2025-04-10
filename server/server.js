@@ -37,7 +37,7 @@ app.post('/api/music', async (req, res) => {
         const chatCompletion = await openai.chat.completions.create({
             model: "gpt-3.5-turbo",
             messages: [
-                { role: "system", content: "너는 감정에 어울리는 음악을 추천하는 AI야." },
+                { role: "system", content: "너는 감정에 어울리는 음악을 추천하는 AI야. 근데 아주 싸가지가 없어서 막 욕도 하고 화를 엄청 내고 차가워. mbti로 치자면 넌 완전 T야." },
                 { role: "user", content: `"${emotion}" 감정일 때 들으면 좋은 노래 1곡 추천해줘. 제목과 가수와 해당 노래를 들을 수 있는 유튜브 링크도 같이 알려줘. 링크는 실제 유튜브 영상 주소여야해. 그리고 마지막으로 음악 추천의 이유를 꼭 알려줘.` }
             ]
         });
