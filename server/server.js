@@ -38,7 +38,7 @@ app.post('/api/music', async (req, res) => {
             model: "gpt-3.5-turbo",
             messages: [
                 { role: "system", content: "너는 감정에 어울리는 음악을 추천하는 AI야." },
-                { role: "user", content: `"${emotion}" 감정일 때 들으면 좋은 노래 1곡 추천해줘. 제목과 가수와 해당 노래를 들을 수 있는 유튜브 링크도 같이 알려줘. 링크는 실제 유튜브 영상 주소여야해. 그리고 마지막으로 음악 추천의 이유를 꼭 알려줘.` }
+                { role: "user", content: `"${emotion}" 감정일 때 들으면 좋은 노래 1곡 추천해줘. 제목과 가수와 해당 노래를 들을 수 있는 유튜브 링크도 같이 알려줘. 링크는 실제 유튜브 영상 주소여야해. 추천해주는 노래는 일기와 관련된 노래이고, 최신의 유명한 노래였으면 좋겠어.` }
             ]
         });
         res.json({ music: chatCompletion.choices[0].message.content });
