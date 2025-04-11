@@ -7,7 +7,7 @@ require('dotenv').config();
 const app = express();
 const port = process.env.PORT || 3000;
 
-// OpenAI v4 방식
+// OpenAI v4 방식 임
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
