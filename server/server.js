@@ -1,23 +1,21 @@
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const { Configuration, OpenAIApi } = require("openai");
+const OpenAI = require("openai"); // ✅ v4 방식
 require("dotenv").config();
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-// 👉 CORS 허용
 app.use(cors());
 app.use(bodyParser.json());
 
-// 👉 OpenAI 설정
-const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
+// ✅ OpenAI 객체 생성
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY
 });
-const openai = new OpenAIApi(configuration);
 
-// 👉 감정 + 일기 피드백 API
+// ✅ AI 피드백
 app.post("/api/feedback", async (req, res) => {
   const { content, emotion } = req.body;
 
@@ -26,71 +24,69 @@ app.post("/api/feedback", async (req, res) => {
 일기 내용:
 ${content}
 
-위의 내용을 바탕으로 친절한 AI 피드백을 한 문단으로 작성해주세요. 사용자에게 감정을 공감하고 조언하는 톤으로 작성해주세요.
+위의 내용을 바탕으로 사용자에게 따뜻하고 공감가는 피드백을 한 문단으로 작성해주세요.
 `;
 
   try {
-    const completion = await openai.createChatCompletion({
+    const completion = await openai.chat.completions.create({
       model: "gpt-4",
-      messages: [{ role: "user", content: prompt }],
+      messages: [{ role: "user", content: prompt }]
     });
-    const feedback = completion.data.choices[0].message.content;
-    res.json({ feedback });
+
+    res.json({ feedback: completion.choices[0].message.content });
   } catch (err) {
-    console.error("피드백 생성 실패:", err);
-    res.status(500).json({ error: "피드백 생성 실패" });
+    console.error("피드백 오류:", err);
+    res.status(500).json({ error: "AI 피드백 실패" });
   }
 });
 
-// 👉 감정 기반 음악 추천 API
+// ✅ 음악 추천
 app.post("/api/music", async (req, res) => {
   const { emotion } = req.body;
 
   const prompt = `
-지금 사용자의 기분은 ${emotion}야. 이 감정에 어울리는 힐링이나 위로가 되는 노래를 한 곡만 추천해줘. 곡 제목, 아티스트, 그리고 YouTube 링크를 포함해줘. 사용자에게 말하듯 자연스럽게 추천해줘.
+현재 기분은 ${emotion}입니다. 기분에 어울리는 힐링 음악을 한 곡만 추천해주세요.
+곡 제목, 아티스트, YouTube 링크를 포함해 자연스럽게 말해주세요.
 `;
 
   try {
-    const completion = await openai.createChatCompletion({
+    const completion = await openai.chat.completions.create({
       model: "gpt-4",
-      messages: [{ role: "user", content: prompt }],
+      messages: [{ role: "user", content: prompt }]
     });
-    const music = completion.data.choices[0].message.content;
-    res.json({ music });
+
+    res.json({ music: completion.choices[0].message.content });
   } catch (err) {
-    console.error("음악 추천 실패:", err);
+    console.error("음악 추천 오류:", err);
     res.status(500).json({ error: "음악 추천 실패" });
   }
 });
 
-// 👉 감정 통계 분석 API
+// ✅ 감정 트렌드 분석
 app.post("/api/analysis", async (req, res) => {
   const { emotionCounts } = req.body;
 
   const prompt = `
-감정 통계를 바탕으로 사용자 감정의 전반적인 경향을 해석해줘. 아래는 감정별 일기 수야.
-${Object.entries(emotionCounts)
-  .map(([emotion, count]) => `${emotion}: ${count}회`)
-  .join("\n")}
+아래는 감정별 작성 횟수입니다:
+${Object.entries(emotionCounts).map(([k, v]) => `${k}: ${v}회`).join("\n")}
 
-사용자에게 따뜻하고 명확하게 설명해줘. 감정적 변화를 예측하거나 조언도 살짝 넣어줘.
+이 통계를 바탕으로 최근 사용자의 감정 흐름을 분석해서 한 문단의 해석을 제공해주세요.
 `;
 
   try {
-    const completion = await openai.createChatCompletion({
+    const completion = await openai.chat.completions.create({
       model: "gpt-4",
-      messages: [{ role: "user", content: prompt }],
+      messages: [{ role: "user", content: prompt }]
     });
 
-    const analysis = completion.data.choices[0].message.content;
-    res.json({ analysis });
+    res.json({ analysis: completion.choices[0].message.content });
   } catch (err) {
-    console.error("감정 분석 실패:", err);
+    console.error("감정 분석 오류:", err);
     res.status(500).json({ error: "감정 분석 실패" });
   }
 });
 
-// 👉 서버 시작
+// ✅ 서버 시작
 app.listen(port, () => {
   console.log(`서버 실행 중: http://localhost:${port}`);
 });
