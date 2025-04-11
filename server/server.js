@@ -70,8 +70,7 @@ app.post("/api/analysis", async (req, res) => {
 아래는 감정별 작성 횟수입니다:
 ${Object.entries(emotionCounts).map(([k, v]) => `${k}: ${v}회`).join("\n")}
 
-이 통계를 바탕으로 최근 사용자의 감정 흐름을 분석해서 한 문단의 해석을 제공해주세요.
-`;
+이 통계를 바탕으로 최근 사용자의 감정 흐름을 분석해서 한 문단의 해석을 제공해주세요. 말투는 친구에게 말하는 것처럼 따뜻하고 친근한 말투로 해주세요.`;
 
   try {
     const completion = await openai.chat.completions.create({
